@@ -2,6 +2,7 @@ require 'rubygems'
 gem 'activerecord', '2.3.4'
 require 'active_record'
 require 'ar_import'
+require 'ruby-debug'
 require 'test/unit'
 
 class MockModel
@@ -48,18 +49,18 @@ class ArImportTest < Test::Unit::TestCase
     assert MockModel.respond_to?(:import)
   end
 
-  def test_imports_every_200
+  def test_imports
     MockModel.import do |buf|
-      202.times do
-        buf.create :name => 'fred'
+      20.times do
+        buf.create :name => 'fred', :job => 'something, here',
+          :and => "'quoted' as saying!", :empty => nil
       end
     end
 
-    assert_equal [
-      'INSERT INTO `mock_models` (`name`) VALUES ' + (['(`fred`)']*201).join(','),
-      'SHOW WARNINGS',
-      'INSERT INTO `mock_models` (`name`) VALUES (`fred`)',
-      'SHOW WARNINGS'
-    ], MockModel.statements
+    assert_equal 2, MockModel.statements.size
+    assert MockModel.statements[0].match(/LOAD DATA LOCAL INFILE '(\S+)' INTO TABLE `mock_models`/)
+    assert_equal 'SHOW WARNINGS', MockModel.statements[1]
+
+    assert_equal '', File.read($1)
   end
 end
