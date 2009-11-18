@@ -1,5 +1,4 @@
 require 'tempfile'
-require 'fastercsv'
 
 module Swivel
   module Acts
