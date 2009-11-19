@@ -1,8 +1,7 @@
 ArImport
 ========
 
-Utilizes MySQL's INSERT INTO table VALUES (), (), () syntax to do quicker
-bulk importing of data.
+Utilizes MySQL's LOAD DATA LOCAL INFILE to do quicker bulk importing of data.
 
 
 Example
